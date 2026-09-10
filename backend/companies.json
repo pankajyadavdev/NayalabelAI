@@ -1,0 +1,384 @@
+[
+  {
+    "company_id": "FMCG_IN_001",
+    "name": "Gujarat Co-operative Milk Marketing Federation Ltd. (Amul)",
+    "common_name": "Amul",
+    "brand_names": [
+      "Amul",
+      "Amul Gold",
+      "Amul Taaza",
+      "Amul Butter",
+      "Amul Kool",
+      "Amulya",
+      "Amul Cheese"
+    ],
+    "registered_address": "Amul Dairy Road, Anand - 388001, Gujarat, India",
+    "pin_code": "388001",
+    "city": "Anand",
+    "state": "Gujarat",
+    "fssai_lic_no": "10012021000071",
+    "consumer_care": {
+      "toll_free": "1800-258-3333",
+      "phone": "02692-258506",
+      "email": "customercare@amul.coop",
+      "grievance_officer": "Consumer Relations Officer, GCMMF Anand"
+    },
+    "categories": [
+      "Dairy",
+      "Ice Cream",
+      "Beverages",
+      "Bakery"
+    ]
+  },
+  {
+    "company_id": "FMCG_IN_002",
+    "name": "Britannia Industries Limited",
+    "common_name": "Britannia",
+    "brand_names": [
+      "Britannia",
+      "Good Day",
+      "Marie Gold",
+      "NutriChoice",
+      "Jim Jam",
+      "Treat",
+      "Milk Bikis",
+      "Little Hearts",
+      "Bourbon",
+      "Tiger"
+    ],
+    "registered_address": "5/1A Hungerford Street, Kolkata - 700017, West Bengal, India",
+    "corporate_office": "Prestige Shantiniketan, Whitefield, Bengaluru - 560048, Karnataka, India",
+    "pin_code": "700017",
+    "city": "Kolkata",
+    "state": "West Bengal",
+    "fssai_lic_no": "10015043001129",
+    "consumer_care": {
+      "toll_free": "1800-425-4449",
+      "phone": "080-37687100",
+      "email": "feedback@britindia.com",
+      "grievance_officer": "Head of Consumer Grievances, Britannia Industries"
+    },
+    "categories": [
+      "Biscuits",
+      "Bakery",
+      "Dairy",
+      "Snacks"
+    ]
+  },
+  {
+    "company_id": "FMCG_IN_003",
+    "name": "ITC Limited (Foods Division)",
+    "common_name": "ITC Foods",
+    "brand_names": [
+      "Aashirvaad",
+      "Sunfeast",
+      "Bingo!",
+      "Yippee!",
+      "Candyman",
+      "mint-o",
+      "B Natural",
+      "Fabelle",
+      "Sunbean",
+      "ITC Master Chef"
+    ],
+    "registered_address": "Virginia House, 37 J.L. Nehru Road, Kolkata - 700071, West Bengal, India",
+    "corporate_office": "ITC Green Centre, 10 CTC Road, Pulikeshi Nagar, Bengaluru - 560005, Karnataka, India",
+    "pin_code": "700071",
+    "city": "Kolkata",
+    "state": "West Bengal",
+    "fssai_lic_no": "10012031000312",
+    "consumer_care": {
+      "toll_free": "1800-425-44444",
+      "phone": "033-22889371",
+      "email": "itccares@itc.in",
+      "grievance_officer": "Consumer Executive, ITC Limited Foods Business"
+    },
+    "categories": [
+      "Atta & Flours",
+      "Biscuits",
+      "Noodles & Pasta",
+      "Snacks",
+      "Ready to Eat",
+      "Spices",
+      "Chocolates"
+    ]
+  },
+  {
+    "company_id": "FMCG_IN_004",
+    "name": "Nestl\u00e9 India Limited",
+    "common_name": "Nestl\u00e9 India",
+    "brand_names": [
+      "Maggi",
+      "KitKat",
+      "Nescaf\u00e9",
+      "Milkybar",
+      "Everyday",
+      "Milkmaid",
+      "BarOne",
+      "Munch",
+      "Nestl\u00e9 A+"
+    ],
+    "registered_address": "100/101, World Trade Centre, Barakhamba Lane, New Delhi - 110001, India",
+    "pin_code": "110001",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "fssai_lic_no": "10012011000168",
+    "consumer_care": {
+      "toll_free": "1800-103-1947",
+      "phone": "011-23418891",
+      "email": "wecare@in.nestle.com",
+      "grievance_officer": "Consumer Services Manager, Nestl\u00e9 House, Gurugram"
+    },
+    "categories": [
+      "Instant Noodles",
+      "Chocolates & Confectionery",
+      "Coffee",
+      "Dairy",
+      "Culinary"
+    ]
+  },
+  {
+    "company_id": "FMCG_IN_005",
+    "name": "Parle Products Private Limited",
+    "common_name": "Parle",
+    "brand_names": [
+      "Parle-G",
+      "Monaco",
+      "Krackjack",
+      "Hide & Seek",
+      "Milano",
+      "Frooti",
+      "Appy Fizz",
+      "20-20",
+      "Top",
+      "Kismi"
+    ],
+    "registered_address": "North Level Crossing, Vile Parle East, Mumbai - 400057, Maharashtra, India",
+    "pin_code": "400057",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "fssai_lic_no": "10013022002253",
+    "consumer_care": {
+      "toll_free": "1800-22-3450",
+      "phone": "022-66916911",
+      "email": "cs@parle.biz",
+      "grievance_officer": "Consumer Relations Manager, Parle Products"
+    },
+    "categories": [
+      "Biscuits",
+      "Confectionery",
+      "Beverages",
+      "Snacks"
+    ]
+  },
+  {
+    "company_id": "FMCG_IN_006",
+    "name": "Tata Consumer Products Limited",
+    "common_name": "Tata Consumer",
+    "brand_names": [
+      "Tata Tea",
+      "Tata Salt",
+      "Tata Sampann",
+      "Soulfull",
+      "Tetley",
+      "Himalayan",
+      "Copper Chimney"
+    ],
+    "registered_address": "1, Bishop Lefroy Road, Kolkata - 700020, West Bengal, India",
+    "corporate_office": "Kirloskar Business Park, Hebbal, Bengaluru - 560024, Karnataka, India",
+    "pin_code": "700020",
+    "city": "Kolkata",
+    "state": "West Bengal",
+    "fssai_lic_no": "10014031001025",
+    "consumer_care": {
+      "toll_free": "1800-108-4488",
+      "phone": "033-22813779",
+      "email": "care@tataconsumer.com",
+      "grievance_officer": "Grievance Redressal Officer, Tata Consumer Products"
+    },
+    "categories": [
+      "Tea",
+      "Salt",
+      "Pulses & Spices",
+      "Breakfast Cereals",
+      "Packaged Water"
+    ]
+  },
+  {
+    "company_id": "FMCG_IN_007",
+    "name": "Haldiram Snacks Private Limited",
+    "common_name": "Haldiram's",
+    "brand_names": [
+      "Haldiram's",
+      "Minute Khana",
+      "Haldiram",
+      "Bikano"
+    ],
+    "registered_address": "B-1/H-8, Mohan Co-operative Industrial Estate, Mathura Road, New Delhi - 110044, India",
+    "pin_code": "110044",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "fssai_lic_no": "10012011000676",
+    "consumer_care": {
+      "toll_free": "1800-102-7576",
+      "phone": "0120-2400285",
+      "email": "care@haldirams.com",
+      "grievance_officer": "Customer Support Lead, Haldiram Snacks"
+    },
+    "categories": [
+      "Traditional Namkeen",
+      "Sweets",
+      "Ready to Eat",
+      "Frozen Foods"
+    ]
+  },
+  {
+    "company_id": "FMCG_IN_008",
+    "name": "Dabur India Limited",
+    "common_name": "Dabur",
+    "brand_names": [
+      "Real",
+      "Real Fruit Power",
+      "Dabur Honey",
+      "Chyawanprash",
+      "Hommade",
+      "Hajmola",
+      "Pudinhara"
+    ],
+    "registered_address": "8/3, Asaf Ali Road, New Delhi - 110002, India",
+    "corporate_office": "Kaushambi, Sahibabad, Ghaziabad - 201010, Uttar Pradesh, India",
+    "pin_code": "110002",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "fssai_lic_no": "10013011000995",
+    "consumer_care": {
+      "toll_free": "1800-103-1644",
+      "phone": "0120-3982000",
+      "email": "daburcares@dabur.com",
+      "grievance_officer": "Consumer Relations Officer, Dabur India"
+    },
+    "categories": [
+      "Fruit Juices",
+      "Honey",
+      "Ayurvedic Health Foods",
+      "Cooking Pastes"
+    ]
+  },
+  {
+    "company_id": "FMCG_IN_009",
+    "name": "Marico Limited",
+    "common_name": "Marico",
+    "brand_names": [
+      "Saffola",
+      "Saffola Oats",
+      "Saffola FITTIFY",
+      "Parachute",
+      "Coco Soul"
+    ],
+    "registered_address": "7th Floor, Grande Palladium, 175 CST Road, Kalina, Santacruz East, Mumbai - 400098, Maharashtra, India",
+    "pin_code": "400098",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "fssai_lic_no": "10012022000258",
+    "consumer_care": {
+      "toll_free": "1800-22-2248",
+      "phone": "022-66480480",
+      "email": "csc@marico.com",
+      "grievance_officer": "Consumer Support Manager, Marico Mumbai"
+    },
+    "categories": [
+      "Edible Oils",
+      "Oats & Cereals",
+      "Health Foods"
+    ]
+  },
+  {
+    "company_id": "FMCG_IN_010",
+    "name": "Bikaji Foods International Limited",
+    "common_name": "Bikaji",
+    "brand_names": [
+      "Bikaji",
+      "Bikaneri Bhujia",
+      "Bikaji Papad",
+      "Bikaji Sweets"
+    ],
+    "registered_address": "F 196-199, Bichhwal Industrial Area, Bikaner - 334006, Rajasthan, India",
+    "pin_code": "334006",
+    "city": "Bikaner",
+    "state": "Rajasthan",
+    "fssai_lic_no": "10012013000346",
+    "consumer_care": {
+      "toll_free": "1800-203-4554",
+      "phone": "0151-2250350",
+      "email": "customercare@bikaji.com",
+      "grievance_officer": "Customer Relations Department, Bikaji Bikaner"
+    },
+    "categories": [
+      "Bhujia & Namkeen",
+      "Papad",
+      "Ethnic Snacks",
+      "Sweets"
+    ]
+  },
+  {
+    "company_id": "FMCG_IN_011",
+    "name": "Adani Wilmar Limited",
+    "common_name": "Adani Wilmar",
+    "brand_names": [
+      "Fortune",
+      "Fortune Soya Badi",
+      "Fortune Chakki Fresh Atta",
+      "Fortune Besan",
+      "Fortune Rice",
+      "Raag"
+    ],
+    "registered_address": "Fortune House, Near Navrangpura Railway Crossing, Ahmedabad - 380009, Gujarat, India",
+    "pin_code": "380009",
+    "city": "Ahmedabad",
+    "state": "Gujarat",
+    "fssai_lic_no": "10013021000561",
+    "consumer_care": {
+      "toll_free": "1800-233-9999",
+      "phone": "079-26455888",
+      "email": "customercare@adaniwilmar.in",
+      "grievance_officer": "Consumer Service Division, Adani Wilmar Ahmedabad"
+    },
+    "categories": [
+      "Edible Oils",
+      "Wheat Flour",
+      "Pulses & Besan",
+      "Rice",
+      "Soya Chunks"
+    ]
+  },
+  {
+    "company_id": "FMCG_IN_012",
+    "name": "Patanjali Foods Limited",
+    "common_name": "Patanjali Foods",
+    "brand_names": [
+      "Patanjali",
+      "Nutrela",
+      "Ruchi Gold",
+      "Mahakosh",
+      "Sunrich"
+    ],
+    "registered_address": "Patanjali Food & Herbal Park, Vill. Padartha, Laksar Road, Haridwar - 249404, Uttarakhand, India",
+    "pin_code": "249404",
+    "city": "Haridwar",
+    "state": "Uttarakhand",
+    "fssai_lic_no": "10014012000266",
+    "consumer_care": {
+      "toll_free": "1800-180-4187",
+      "phone": "01334-240008",
+      "email": "feedback@patanjalifoods.com",
+      "grievance_officer": "Consumer Redressal Cell, Patanjali Haridwar"
+    },
+    "categories": [
+      "Soya Products",
+      "Edible Oils",
+      "Biscuits",
+      "Flour",
+      "Honey"
+    ]
+  }
+]
