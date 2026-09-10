@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NyayaLabel AI — Packaging Compliance Engine</title>
+  <!-- Tailwind CSS CDN for utility classes -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Custom Dark Theme Styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-[#0b0f19] text-slate-100 min-h-screen flex antialiased">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar">
+    <!-- Brand Logo Header -->
+    <div class="px-5 py-5 border-b border-[#1e293b] flex items-center gap-3 cursor-pointer" onclick="switchTab('dashboard')">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+        <i class="fa-solid fa-layer-group text-base"></i>
+      </div>
+      <div>
+        <h1 class="text-sm font-bold tracking-tight text-white flex items-center gap-1.5">
+          NyayaLabel <span class="text-blue-500">AI</span>
+        </h1>
+        <p class="text-[9px] tracking-[0.16em] uppercase text-slate-400 font-semibold">COMPLIANCE ENGINE</p>
+      </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <div class="px-3 py-4 flex-grow space-y-1">
+      <div id="nav-dashboard" onclick="switchTab('dashboard')" class="sidebar-nav-item active">
+        <i class="fa-solid fa-table-cells-large w-5 text-center text-sm"></i>
+        <span>Dashboard</span>
+      </div>
+      <div id="nav-scan" onclick="switchTab('scan')" class="sidebar-nav-item">
+        <i class="fa-regular fa-circle-plus w-5 text-center text-sm"></i>
+        <span>New Inspection</span>
+      </div>
+      <div id="nav-history" onclick="switchTab('history')" class="sidebar-nav-item">
+        <i class="fa-regular fa-clock w-5 text-center text-sm"></i>
+        <span>Inspection History</span>
+      </div>
+
+      <!-- Management Section -->
+      <div class="pt-5 pb-1 px-3">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">MANAGEMENT</span>
+      </div>
+      <div id="nav-products" onclick="switchTab('products')" class="sidebar-nav-item">
+        <i class="fa-solid fa-box w-5 text-center text-sm"></i>
+        <span>Products</span>
+      </div>
+      <div id="nav-companies" onclick="switchTab('companies')" class="sidebar-nav-item">
+        <i class="fa-solid fa-building w-5 text-center text-sm"></i>
+        <span>Companies</span>
+      </div>
+      <div id="nav-rules" onclick="switchTab('rules')" class="sidebar-nav-item">
+        <i class="fa-solid fa-shield-halved w-5 text-center text-sm"></i>
+        <span>Compliance Rules</span>
+      </div>
+    </div>
+
+    <!-- Sidebar Footer -->
+    <div class="p-4 border-t border-[#1e293b] space-y-3">
+      <!-- Connection Status -->
+      <div class="flex items-center gap-2 text-xs text-slate-400">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500 animate-pulse"></span>
+        <span class="text-[11px] font-medium text-slate-300">API Connected: <span class="text-emerald-400">Online</span></span>
+      </div>
+      <!-- Dark Mode Indicator / Toggle -->
+      <button onclick="toggleDarkMode()" class="w-full bg-[#131b2e] hover:bg-[#1a263d] border border-[#1e293b] text-slate-300 hover:text-white rounded-lg py-1.5 px-3 text-xs flex items-center justify-center gap-2 transition">
+        <i class="fa-solid fa-moon text-slate-400 text-xs"></i>
+        <span>Dark Mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN WRAPPER ================= -->
+  <div class="main-wrapper">
+    <!-- Top Navigation Bar -->
+    <header class="top-navbar">
+      <!-- Breadcrumb -->
+      <div class="flex items-center gap-2 text-xs">
+        <span class="text-slate-400 font-medium">NyayaLabel AI</span>
+        <span class="text-slate-600">/</span>
+        <span id="breadcrumb-active" class="text-white font-semibold">Dashboard</span>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="flex items-center gap-3">
+        <button onclick="refreshCurrentTab()" class="bg-[#131b2e] hover:bg-[#1a263d] border border-[#1e293b] text-slate-300 hover:text-white rounded-lg px-3 py-1.5 text-xs font-medium flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-rotate-right text-[11px]"></i>
+          <span>Refresh</span>
+        </button>
+        <button onclick="switchTab('scan')" class="bg-blue-600 hover:bg-blue-500 text-white rounded-lg px-3.5 py-1.5 text-xs font-semibold flex items-center gap-1.5 shadow-md shadow-blue-600/30 transition">
+          <i class="fa-solid fa-plus text-[11px]"></i>
+          <span>New Inspection</span>
+        </button>
+
+        <!-- User Authentication Widget -->
+        <div id="user-auth-widget" onclick="openAuthModal()" class="flex items-center gap-2 cursor-pointer bg-[#131b2e] hover:bg-[#1a263d] border border-[#1e293b] px-3 py-1.5 rounded-lg text-xs transition">
+          <div class="w-6 h-6 rounded-full bg-blue-600/30 text-blue-400 border border-blue-500/40 flex items-center justify-center text-[10px]">
+            <i class="fa-solid fa-user-shield"></i>
+          </div>
+          <div class="flex flex-col text-left">
+            <span id="nav-user-name" class="font-bold text-slate-200 text-[11px] leading-tight">R. K. Sharma</span>
+            <span id="nav-user-badge" class="text-[9px] text-blue-400 font-mono leading-tight">LMO-DL-7729</span>
+          </div>
+          <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 ml-1"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- Workspace Main Body -->
+    <main class="p-6 flex-grow">
+
+      <!-- ================= TAB 1: DASHBOARD (Image 2 Match) ================= -->
+      <section id="tab-dashboard" class="space-y-6">
+        <!-- Top Cards Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <!-- Card 1: Inspection Status Breakdown -->
+          <div class="nyaya-card">
+            <h2 class="text-sm font-bold text-white tracking-tight">Inspection Status Breakdown</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Distribution across all historical tests</p>
+
+            <!-- Segmented Progress Bar -->
+            <div class="breakdown-bar-container">
+              <div id="bar-pass" class="bar-segment bar-segment-pass" style="width: 42.9%;"></div>
+              <div id="bar-fail" class="bar-segment bar-segment-fail" style="width: 57.1%;"></div>
+              <div id="bar-review" class="bar-segment bar-segment-review" style="width: 0%;"></div>
+            </div>
+
+            <!-- Segment Counts Legend -->
+            <div class="flex flex-wrap items-center gap-4 text-xs mt-3 text-slate-300">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#22c55e]"></span>
+                <span>Passed { <span id="dash-count-passed" class="font-bold text-white">6</span> }</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#ef4444]"></span>
+                <span>Failed { <span id="dash-count-failed" class="font-bold text-white">8</span> }</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#f59e0b]"></span>
+                <span>Review Required { <span id="dash-count-review" class="font-bold text-white">0</span> }</span>
+              </div>
+            </div>
+
+            <!-- Key Indicators Footer -->
+            <div class="flex items-center justify-between pt-4 mt-4 border-t border-[#1e293b] text-xs">
+              <div class="flex items-center gap-2">
+                <span class="text-slate-400">Highest Observed Risk:</span>
+                <span id="dash-highest-risk" class="font-bold text-white">0.93</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-slate-400">Registered Companies:</span>
+                <span id="dash-registered-companies" class="font-bold text-white">8</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Fast-Track Audit -->
+          <div class="nyaya-card flex flex-col justify-between">
+            <div>
+              <div class="inline-block">
+                <span class="bg-blue-500/15 text-blue-400 border border-blue-500/30 text-[10px] uppercase font-extrabold px-2 py-0.5 rounded tracking-wider">
+                  FAST-TRACK AUDIT
+                </span>
+              </div>
+              <h2 class="text-base font-bold text-white mt-2.5 tracking-tight">Automated Packaging Audit</h2>
+              <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+                Run multi-pass OCR, Legal Metrology validation, and FSSAI checks on any packaged product label.
+              </p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3 mt-5">
+              <button onclick="switchTab('scan')" class="bg-blue-600 hover:bg-blue-500 text-white rounded-lg px-4 py-2 text-xs font-semibold shadow-md shadow-blue-600/30 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-cloud-arrow-up text-xs"></i>
+                <span>Upload & Inspect</span>
+              </button>
+              <button onclick="loadDemoInspectionFast()" class="bg-[#0f172a] hover:bg-[#1a263d] border border-[#1e293b] text-slate-300 hover:text-white rounded-lg px-4 py-2 text-xs font-semibold transition flex items-center gap-1.5">
+                <i class="fa-solid fa-bolt text-xs text-amber-400"></i>
+                <span>Load Demo Sample</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Label Inspections Card -->
+        <div class="nyaya-card">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="text-sm font-bold text-white tracking-tight">Recent Label Inspections</h2>
+              <p class="text-xs text-slate-400 mt-0.5">Latest compliance evaluations</p>
+            </div>
+            <button onclick="switchTab('history')" class="bg-[#0f172a] hover:bg-[#1a263d] border border-[#1e293b] text-slate-300 hover:text-white rounded-lg px-3 py-1.5 text-xs font-medium transition">
+              View All History
+            </button>
+          </div>
+
+          <!-- Table Container -->
+          <div class="overflow-x-auto rounded-lg border border-[#1e293b]">
+            <table class="nyaya-table">
+              <thead>
+                <tr>
+                  <th class="w-16">ID</th>
+                  <th>PRODUCT</th>
+                  <th>STATUS</th>
+                  <th>RISK SCORE</th>
+                  <th>TIMESTAMP</th>
+                  <th class="text-right pr-6">ACTION</th>
+                </tr>
+              </thead>
+              <tbody id="recent-inspections-tbody">
+                <!-- Dynamically injected rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB 2: NEW INSPECTION (Image 1 Match) ================= -->
+      <section id="tab-scan" class="space-y-6 hidden">
+        <!-- Title & Subtitle -->
+        <div>
+          <h2 class="text-xl font-bold text-white tracking-tight">New Product Inspection</h2>
+          <p class="text-xs text-slate-400 mt-1">Select target product, upload packaging label, and execute automated audit</p>
+        </div>
+
+        <!-- 2-Column Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Left Column (Form): 7 cols (~60%) -->
+          <div class="lg:col-span-7 nyaya-card space-y-5">
+            <!-- Target Product — Fully Automated AI Vision Detection -->
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <label class="block text-xs font-semibold text-slate-300">
+                  Target Product
+                </label>
+                <span class="text-[10px] text-emerald-400 font-mono bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded flex items-center gap-1">
+                  <i class="fa-solid fa-wand-magic-sparkles text-[9px]"></i>
+                  <span>AI Auto-Detect Active</span>
+                </span>
+              </div>
+
+              <!-- Idle state (no image yet) -->
+              <div id="ai-detect-idle" class="p-3 rounded-lg bg-[#0b1120] border border-[#1e293b] flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
+                  <i class="fa-solid fa-microchip text-blue-400 text-sm"></i>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold text-slate-300">AI Vision will auto-identify the product</p>
+                  <p class="text-[11px] text-slate-500 mt-0.5">Upload a label image or use the camera — no manual selection needed</p>
+                </div>
+              </div>
+
+              <!-- Scanning state (analyzing image) -->
+              <div id="ai-detect-scanning" class="hidden p-3 rounded-lg bg-blue-950/30 border border-blue-500/30 flex items-center gap-3">
+                <i class="fa-solid fa-spinner fa-spin text-blue-400 text-sm flex-shrink-0"></i>
+                <div>
+                  <p class="text-xs font-semibold text-blue-300">AI Vision analyzing packaging label...</p>
+                  <p class="text-[11px] text-slate-500 mt-0.5">Extracting product identity from image</p>
+                </div>
+              </div>
+
+              <!-- Result state (product identified) -->
+              <div id="ai-detection-result-banner" class="hidden p-3 rounded-lg bg-emerald-950/30 border border-emerald-500/30 text-xs">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0"></span>
+                    <div>
+                      <p class="font-bold text-white" id="detected-product-title">Kurkure Schezwan</p>
+                      <p class="text-[11px] text-slate-400 mt-0.5" id="detected-product-sub">PepsiCo India Holdings Pvt. Ltd.</p>
+                    </div>
+                  </div>
+                  <span id="detected-confidence-badge" class="text-[10px] font-mono text-emerald-400 bg-emerald-500/20 px-2 py-1 rounded-lg font-bold border border-emerald-500/30 flex-shrink-0">98% Match</span>
+                </div>
+              </div>
+
+              <!-- Hidden input to carry detected product name for inspection submission -->
+              <input type="hidden" id="select-target-product" value="AUTO" />
+            </div>
+
+            <!-- Quick Demo Assets -->
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-xs text-slate-400 font-medium">Quick Demo Assets:</span>
+              <button type="button" onclick="selectQuickDemo('kurkure')" class="demo-pill-btn">
+                Kurkure Schezwan (75g)
+              </button>
+              <button type="button" onclick="selectQuickDemo('bourbon')" class="demo-pill-btn">
+                Bourbon Biscuits (Mismatch test)
+              </button>
+            </div>
+
+            <!-- Packaging Label Image Dropzone -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">
+                Packaging Label Image <span class="text-red-500">*</span>
+              </label>
+              
+              <div id="dropzone-area" class="dropzone-container">
+                <!-- Empty State Content -->
+                <div id="dropzone-prompt" class="space-y-2">
+                  <div class="w-10 h-10 mx-auto rounded-full bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-400">
+                    <i class="fa-solid fa-cloud-arrow-up text-base"></i>
+                  </div>
+                  <h3 class="text-sm font-semibold text-white">Drag & Drop label image here</h3>
+                  <p class="text-xs text-slate-400">Supports JPG, JPEG, PNG, WEBP</p>
+                  
+                  <div class="flex items-center justify-center gap-3 pt-2">
+                    <button type="button" onclick="triggerFileInput()" class="bg-[#131b2e] hover:bg-[#1e293b] border border-[#27354f] text-slate-200 hover:text-white rounded-lg px-4 py-1.5 text-xs font-semibold transition flex items-center gap-1.5">
+                      <i class="fa-regular fa-folder-open text-xs"></i>
+                      <span>Browse Files</span>
+                    </button>
+                    <!-- Live Camera Trigger -->
+                    <button type="button" onclick="openLiveCameraModal()" class="bg-[#131b2e] hover:bg-[#1e293b] border border-[#27354f] text-slate-200 hover:text-white rounded-lg px-4 py-1.5 text-xs font-semibold transition flex items-center gap-1.5">
+                      <i class="fa-solid fa-camera text-xs text-blue-400"></i>
+                      <span>Use Camera</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Active Image Preview Container (Hidden by default) -->
+                <div id="image-preview-box" class="hidden space-y-3">
+                  <div class="relative max-w-sm mx-auto rounded-lg overflow-hidden border border-slate-700 bg-slate-900 shadow-md">
+                    <img id="preview-image-elem" src="" alt="Selected Packaging Label" class="w-full max-h-56 object-contain" />
+                    <button type="button" onclick="clearSelectedImage()" class="absolute top-2 right-2 bg-black/70 hover:bg-red-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs transition">
+                      <i class="fa-solid fa-xmark"></i>
+                    </button>
+                  </div>
+                  <div class="flex items-center justify-center gap-3 text-xs">
+                    <span id="preview-filename-badge" class="font-mono text-slate-300">sample_label.jpg</span>
+                    <button type="button" onclick="openLiveCameraModal()" class="text-blue-400 hover:underline">
+                      <i class="fa-solid fa-camera"></i> Retake
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Hidden file input -->
+                <input type="file" id="real-file-input" accept="image/*" class="hidden" onchange="onFileSelected(this)" />
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div>
+              <button id="btn-run-inspection" type="button" onclick="submitInspection()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-blue-600/30 transition flex items-center justify-center gap-2 text-sm">
+                <i class="fa-solid fa-microchip text-xs"></i>
+                <span>Run AI Label Inspection</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Column: 5 cols (~40%) - Compliance Protocol -->
+          <div class="lg:col-span-5 nyaya-card space-y-4">
+            <div>
+              <h2 class="text-sm font-bold text-white tracking-tight">Compliance Protocol</h2>
+              <p class="text-xs text-slate-400 mt-0.5">Enforced under Legal Metrology & FSSAI regulations</p>
+            </div>
+
+            <!-- Protocol Step 1 -->
+            <div class="protocol-step">
+              <div class="protocol-number">1</div>
+              <div>
+                <h3 class="text-xs font-bold text-white">MRP Presence</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Maximum Retail Price inclusive of all taxes.</p>
+              </div>
+            </div>
+
+            <!-- Protocol Step 2 -->
+            <div class="protocol-step">
+              <div class="protocol-number">2</div>
+              <div>
+                <h3 class="text-xs font-bold text-white">Net Quantity</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Standardized mass/volume with unit conversion.</p>
+              </div>
+            </div>
+
+            <!-- Protocol Step 3 -->
+            <div class="protocol-step">
+              <div class="protocol-number">3</div>
+              <div>
+                <h3 class="text-xs font-bold text-white">Batch Identification</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Lot/batch tracking number audit.</p>
+              </div>
+            </div>
+
+            <!-- Protocol Step 4 -->
+            <div class="protocol-step">
+              <div class="protocol-number">4</div>
+              <div>
+                <h3 class="text-xs font-bold text-white">Mfg & Expiry Dates</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Shelf-life and packaging validity parsing.</p>
+              </div>
+            </div>
+
+            <!-- Protocol Step 5 -->
+            <div class="protocol-step">
+              <div class="protocol-number">5</div>
+              <div>
+                <h3 class="text-xs font-bold text-white">Manufacturer & Origin</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Corporate name & country of origin verification.</p>
+              </div>
+            </div>
+
+            <!-- Protocol Step 6 -->
+            <div class="protocol-step">
+              <div class="protocol-number">6</div>
+              <div>
+                <h3 class="text-xs font-bold text-white">FSSAI 14-Digit Format</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Statutory food safety license format validation.</p>
+              </div>
+            </div>
+
+            <!-- Quick Rule Reference Badge -->
+            <div class="p-3 rounded-lg bg-[#0b1120] border border-[#1e293b] text-[11px] text-slate-400 flex items-center justify-between mt-4">
+              <span>Section 36 Penalty Protection</span>
+              <span class="text-emerald-400 font-semibold">Active & Armed</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB 3: INSPECTION HISTORY ================= -->
+      <section id="tab-history" class="space-y-5 hidden">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-bold text-white tracking-tight">Inspection History</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Complete statutory audit log of all tested packaging labels</p>
+          </div>
+          <!-- Filter Controls -->
+          <div class="flex items-center gap-3">
+            <input type="text" id="history-search-input" onkeyup="filterHistoryTable()" placeholder="Search product, company, ID..." class="nyaya-input max-w-xs text-xs" />
+            <select id="history-status-filter" onchange="filterHistoryTable()" class="nyaya-select text-xs w-36">
+              <option value="ALL">All Statuses</option>
+              <option value="Passed">Passed</option>
+              <option value="Failed">Failed</option>
+              <option value="Review Required">Review Required</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Full Table -->
+        <div class="nyaya-card p-0 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="nyaya-table">
+              <thead>
+                <tr>
+                  <th class="w-16">ID</th>
+                  <th>PRODUCT</th>
+                  <th>COMPANY</th>
+                  <th>STATUS</th>
+                  <th>RISK SCORE</th>
+                  <th>TIMESTAMP</th>
+                  <th class="text-right pr-6">ACTION</th>
+                </tr>
+              </thead>
+              <tbody id="history-table-tbody">
+                <!-- Dynamically loaded -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB 4: PRODUCTS ================= -->
+      <section id="tab-products" class="space-y-5 hidden">
+        <div>
+          <h2 class="text-xl font-bold text-white tracking-tight">Registered FMCG Products</h2>
+          <p class="text-xs text-slate-400 mt-0.5">Catalog of packaged commodities monitored under Legal Metrology standards</p>
+        </div>
+
+        <div id="products-catalog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Dynamically populated product cards -->
+        </div>
+      </section>
+
+      <!-- ================= TAB 5: COMPANIES ================= -->
+      <section id="tab-companies" class="space-y-5 hidden">
+        <div>
+          <h2 class="text-xl font-bold text-white tracking-tight">Registered FMCG Manufacturers</h2>
+          <p class="text-xs text-slate-400 mt-0.5">Directory of corporate packers and importers under Directorate of Legal Metrology</p>
+        </div>
+
+        <div id="companies-directory-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Dynamically populated companies -->
+        </div>
+      </section>
+
+      <!-- ================= TAB 6: COMPLIANCE RULES ================= -->
+      <section id="tab-rules" class="space-y-5 hidden">
+        <div>
+          <h2 class="text-xl font-bold text-white tracking-tight">Statutory Compliance Rules</h2>
+          <p class="text-xs text-slate-400 mt-0.5">Legal Metrology Act, 2009 & Packaged Commodities Rules 2011 (Amended to 2026)</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="nyaya-card space-y-2">
+            <span class="text-blue-400 text-xs font-mono font-bold">Rule 6(1)(a)</span>
+            <h3 class="text-sm font-bold text-white">Manufacturer Name & Address with PIN</h3>
+            <p class="text-xs text-slate-400">Complete physical address of manufacturer, packer, or importer with mandatory 6-digit postal PIN code.</p>
+          </div>
+          <div class="nyaya-card space-y-2">
+            <span class="text-blue-400 text-xs font-mono font-bold">Rule 6(1)(b)</span>
+            <h3 class="text-sm font-bold text-white">Generic / Common Name</h3>
+            <p class="text-xs text-slate-400">Unambiguous generic or common commodity identity name conspicuous on principal display panel.</p>
+          </div>
+          <div class="nyaya-card space-y-2">
+            <span class="text-blue-400 text-xs font-mono font-bold">Rule 6(1)(c) & Rule 11/12</span>
+            <h3 class="text-sm font-bold text-white">Net Quantity & Standard Metric Units</h3>
+            <p class="text-xs text-slate-400">Legal SI metric symbols only ('g', 'kg', 'ml', 'l', 'N'). No pluralization ('gms', 'kgs') and no trailing punctuation ('g.').</p>
+          </div>
+          <div class="nyaya-card space-y-2">
+            <span class="text-blue-400 text-xs font-mono font-bold">Rule 6(1)(d)</span>
+            <h3 class="text-sm font-bold text-white">Month and Year of Manufacture / Packing</h3>
+            <p class="text-xs text-slate-400">Month and year of manufacture or packaging, plus Best Before / Expiry declaration for perishable goods.</p>
+          </div>
+          <div class="nyaya-card space-y-2">
+            <span class="text-blue-400 text-xs font-mono font-bold">Rule 6(1)(e) & Rule 6(1)(ea)</span>
+            <h3 class="text-sm font-bold text-white">Maximum Retail Price (MRP) & Unit Sale Price</h3>
+            <p class="text-xs text-slate-400">MRP in Indian Rupees (₹) with mandatory phrase 'inclusive of all taxes'. Unit Sale Price (USP) per g/kg/ml/l mandatory for &gt; 1 unit.</p>
+          </div>
+          <div class="nyaya-card space-y-2">
+            <span class="text-blue-400 text-xs font-mono font-bold">Rule 6(1)(f)</span>
+            <h3 class="text-sm font-bold text-white">Consumer Grievance Redressal</h3>
+            <p class="text-xs text-slate-400">Name, complete address, telephone helpline number, and email ID of person or grievance officer.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ================= LIVE CAMERA SCANNER MODAL ================= -->
+  <div id="camera-modal" class="nyaya-modal-backdrop hidden">
+    <div class="nyaya-modal-content max-w-xl">
+      <!-- Modal Header -->
+      <div class="p-4 border-b border-[#1e293b] flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
+          <h3 class="text-sm font-bold text-white">Live Packaging Label Scanner</h3>
+        </div>
+        <button onclick="closeLiveCameraModal()" class="text-slate-400 hover:text-white text-base transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Viewfinder Body -->
+      <div class="p-4 space-y-4">
+        <div class="camera-viewfinder-box">
+          <!-- Video Stream -->
+          <video id="webcam-video" autoplay playsinline class="camera-video"></video>
+          
+          <!-- Animated Laser Beam -->
+          <div class="scan-laser-line"></div>
+          
+          <!-- HUD Framing Corners -->
+          <div class="hud-corner hud-tl"></div>
+          <div class="hud-corner hud-tr"></div>
+          <div class="hud-corner hud-bl"></div>
+          <div class="hud-corner hud-br"></div>
+
+          <!-- Flash Overlay -->
+          <div id="shutter-flash-overlay" class="absolute inset-0 pointer-events-none"></div>
+
+          <!-- Resolution / Status Badge -->
+          <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded text-[10px] text-emerald-400 font-mono flex items-center gap-1.5 border border-white/10">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span id="camera-status-text">1080p Live Stream</span>
+          </div>
+        </div>
+
+        <!-- Camera Info & Guidance -->
+        <p class="text-center text-xs text-slate-400">
+          Position the product packaging label within the target guidelines and press <b>Capture Snapshot</b>.
+        </p>
+
+        <!-- Hidden canvas for taking snapshot -->
+        <canvas id="camera-snapshot-canvas" class="hidden"></canvas>
+
+        <!-- Control Buttons -->
+        <div class="flex items-center justify-center gap-3 pt-2">
+          <!-- Switch Camera Button -->
+          <button type="button" onclick="switchCameraFacing()" class="bg-[#0f172a] hover:bg-[#1a263d] border border-[#1e293b] text-slate-300 hover:text-white px-3.5 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-camera-rotate text-xs"></i>
+            <span>Flip</span>
+          </button>
+
+          <!-- Primary Capture Button -->
+          <button type="button" onclick="captureLiveSnapshot()" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-lg text-xs font-semibold shadow-lg shadow-blue-600/30 transition flex items-center gap-2">
+            <i class="fa-solid fa-camera text-sm"></i>
+            <span>Capture Snapshot</span>
+          </button>
+
+          <!-- Test Synthetic Mock (if no webcam hardware available) -->
+          <button type="button" onclick="captureSyntheticTestFrame()" class="bg-[#0f172a] hover:bg-[#1a263d] border border-[#1e293b] text-slate-300 hover:text-white px-3 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-wand-magic-sparkles text-xs text-amber-400"></i>
+            <span>Test Mock</span>
+          </button>
+
+          <!-- Cancel Button -->
+          <button type="button" onclick="closeLiveCameraModal()" class="bg-[#1e293b] hover:bg-slate-700 text-slate-300 px-3.5 py-2 rounded-lg text-xs font-semibold transition">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= INSPECTION DETAIL / RESULT MODAL ================= -->
+  <div id="details-modal" class="nyaya-modal-backdrop hidden">
+    <div class="nyaya-modal-content max-w-2xl">
+      <!-- Modal Header -->
+      <div class="p-4 border-b border-[#1e293b] flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span id="modal-display-id" class="text-sm font-mono font-bold text-blue-400">#14</span>
+          <h3 id="modal-product-title" class="text-sm font-bold text-white">Kurkure Schezwan</h3>
+          <span id="modal-status-badge" class="status-pill status-pill-failed">Failed</span>
+        </div>
+        <button onclick="closeDetailsModal()" class="text-slate-400 hover:text-white text-base transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-5 space-y-5">
+        <!-- Overview Scorecards -->
+        <div class="grid grid-cols-3 gap-3">
+          <div class="p-3 rounded-lg bg-[#0b1120] border border-[#1e293b]">
+            <p class="text-[10px] text-slate-400 uppercase font-semibold">Risk Score</p>
+            <p id="modal-risk-score" class="text-xl font-bold text-red-400 mt-0.5">0.93</p>
+          </div>
+          <div class="p-3 rounded-lg bg-[#0b1120] border border-[#1e293b]">
+            <p class="text-[10px] text-slate-400 uppercase font-semibold">Compliance</p>
+            <p id="modal-compliance-score" class="text-xl font-bold text-emerald-400 mt-0.5">25%</p>
+          </div>
+          <div class="p-3 rounded-lg bg-[#0b1120] border border-[#1e293b]">
+            <p class="text-[10px] text-slate-400 uppercase font-semibold">Violations</p>
+            <p id="modal-violations-count" class="text-xl font-bold text-amber-400 mt-0.5">2</p>
+          </div>
+        </div>
+
+        <!-- Field Breakdown Checks -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Statutory Field Audits</h4>
+          <div id="modal-field-checks-container" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+            <!-- Dynamically populated checks -->
+          </div>
+        </div>
+
+        <!-- Officer Notes / Advice -->
+        <div class="p-3 rounded-lg bg-[#0b1120] border border-[#1e293b]">
+          <h4 class="text-[11px] font-bold text-slate-300 uppercase">Statutory Assessment Recommendation</h4>
+          <p id="modal-officer-notes" class="text-xs text-slate-300 mt-1 leading-relaxed">
+            Statutory prosecution notice issued under Section 36 of Legal Metrology Act, 2009.
+          </p>
+        </div>
+
+        <!-- Modal Footer Actions -->
+        <div class="flex items-center justify-between pt-2 border-t border-[#1e293b]">
+          <span id="modal-timestamp" class="text-xs text-slate-500 font-mono">6/9/2026, 9:25:39 am</span>
+          <div class="flex items-center gap-2">
+            <button id="modal-btn-pdf" onclick="downloadCurrentPDF()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
+              <i class="fa-solid fa-file-pdf"></i>
+              <span>Download PDF Certificate</span>
+            </button>
+            <button onclick="closeDetailsModal()" class="bg-[#1e293b] hover:bg-slate-700 text-slate-300 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= AUTHENTICATION & LOGIN MODAL ================= -->
+  <div id="auth-modal" class="nyaya-modal-backdrop hidden">
+    <div class="nyaya-modal-content max-w-md">
+      <!-- Modal Header -->
+      <div class="p-5 border-b border-[#1e293b] flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-sm">
+            <i class="fa-solid fa-shield-halved text-sm"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-white">Directorate Authentication</h3>
+            <p class="text-[10px] text-slate-400">Legal Metrology & FSSAI Access Gateway</p>
+          </div>
+        </div>
+        <button onclick="closeAuthModal()" class="text-slate-400 hover:text-white transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-5 space-y-4">
+        <!-- Current Active Session Info Box -->
+        <div id="auth-current-session-box" class="p-3 rounded-lg bg-[#0b1120] border border-[#1e293b] flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div>
+              <p id="modal-auth-status-title" class="text-xs font-semibold text-white">Active Officer Session</p>
+              <p id="modal-auth-status-sub" class="text-[10px] text-slate-400">Badge: LMO-DL-7729 (Enforcement)</p>
+            </div>
+          </div>
+          <button type="button" onclick="executeLogout()" class="text-xs text-red-400 hover:text-red-300 border border-red-500/30 px-2.5 py-1 rounded bg-red-500/10 transition">
+            Sign Out
+          </button>
+        </div>
+
+        <!-- Credentials Form -->
+        <form onsubmit="handleLoginFormSubmit(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Inspector / Officer Username</label>
+            <div class="relative">
+              <i class="fa-regular fa-user absolute left-3 top-3 text-slate-500 text-xs"></i>
+              <input type="text" id="auth-input-username" required placeholder="e.g. officer" class="nyaya-input pl-8 text-xs" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Access Password</label>
+            <div class="relative">
+              <i class="fa-solid fa-lock absolute left-3 top-3 text-slate-500 text-xs"></i>
+              <input type="password" id="auth-input-password" required placeholder="••••••••" class="nyaya-input pl-8 pr-8 text-xs" />
+              <i onclick="togglePasswordVisibility()" class="fa-regular fa-eye absolute right-3 top-3 text-slate-500 text-xs cursor-pointer hover:text-slate-300"></i>
+            </div>
+          </div>
+
+          <!-- Error Alert Banner -->
+          <div id="auth-error-banner" class="hidden p-2.5 rounded-lg bg-red-950/40 border border-red-500/30 text-red-300 text-xs">
+            Invalid credentials. Please verify username and password.
+          </div>
+
+          <button id="btn-auth-submit" type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 px-4 rounded-lg shadow-md shadow-blue-600/30 transition text-xs flex items-center justify-center gap-2">
+            <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
+            <span>Authenticate & Sign In</span>
+          </button>
+        </form>
+
+        <!-- 1-Click Quick Role Switch -->
+        <div class="pt-3 border-t border-[#1e293b]">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-2">1-Click Quick Role Switch</span>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="quickLoginAs('officer', 'officer123')" class="p-2 rounded-lg bg-[#0b1120] hover:bg-[#1a263d] border border-[#1e293b] text-left transition">
+              <span class="text-xs font-bold text-white block">🛡️ Enforcement Officer</span>
+              <span class="text-[10px] text-slate-400 block">LMO-DL-7729 (Enforcement)</span>
+            </button>
+            <button type="button" onclick="quickLoginAs('manager', 'manager123')" class="p-2 rounded-lg bg-[#0b1120] hover:bg-[#1a263d] border border-[#1e293b] text-left transition">
+              <span class="text-xs font-bold text-white block">🏢 Brand Manager</span>
+              <span class="text-[10px] text-slate-400 block">Priya Patel (FMCG QC)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main JavaScript App -->
+  <script src="app.js"></script>
+</body>
+</html>
