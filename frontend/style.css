@@ -555,9 +555,25 @@ body {
   background-color: #eff6ff !important;
 }
 
-[data-theme="light"] .bg-slate-800,
-[data-theme="light"] .bg-slate-900 {
+[data-theme="light"] .bg-\[\#1e293b\] {
   background-color: #f1f5f9 !important;
+  color: #334155 !important;
+}
+
+[data-theme="light"] .bg-\[\#1e293b\]:hover {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .bg-slate-800,
+[data-theme="light"] .bg-slate-900,
+[data-theme="light"] .bg-slate-950 {
+  background-color: #f1f5f9 !important;
+}
+
+[data-theme="light"] .bg-slate-800\/80,
+[data-theme="light"] .bg-slate-900\/50 {
+  background-color: #f8fafc !important;
 }
 
 [data-theme="light"] .border-\[\#1e293b\],

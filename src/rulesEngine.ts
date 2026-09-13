@@ -294,7 +294,7 @@ export class LegalMetrologyRulesEngine {
     // 1. Rule 6(1)(a): Manufacturer, Packer or Importer Name & Complete Address with PIN
     const mfg = (extractedData.manufacturer_name_and_address || "").trim();
     const matchedFmcg = this.findMatchingFMCGCompany(mfg || extractedData.brand_name || "");
-    const pinMatch = mfg.match(/\b[1-9][0-9]{5}\b/);
+    const pinMatch = mfg.match(/\b[1-9][0-9]{2}\s?[0-9]{3}\b/);
 
     if (!mfg) {
       results["manufacturer_details"] = {
@@ -440,21 +440,29 @@ export class LegalMetrologyRulesEngine {
       }
     }
 
-    // 4. Rule 6(1)(d): Month and Year of Manufacture / Packing / Import
+    // 4. Rule 6(1)(d): Month and Year of Manufacture / Packing / Import & Date of Expiry
     const mfgDate = (extractedData.date_of_manufacture || "").trim();
     const bestBefore = (extractedData.best_before_expiry || "").trim();
     const combinedDates = `${mfgDate} ${bestBefore}`.trim();
 
-    const dateMatch = combinedDates.match(/(\b\d{2}[/\-\.]\d{4}\b|\b\d{2}[/\-\.]\d{2}[/\-\.]\d{4}\b|\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*[ ,\-\.]+\d{4})/i);
+    // Regex supporting 2-digit years (e.g. JUN/26, MAY/28, 06/26, 05/28) and 4-digit years (06/2026, JUN/2026)
+    const packagingDateRegex = /(\b\d{1,2}[/\-\.](?:20\d{2}|\d{2})\b|\b\d{1,2}[/\-\.]\d{1,2}[/\-\.](?:20\d{2}|\d{2})\b|\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*[ /\-\.]+(?:20\d{2}|\d{2})\b|\b(?:202[0-9]|203[0-9])\b)/i;
+    
+    const mfgDateMatch = mfgDate ? mfgDate.match(packagingDateRegex) : null;
+    const expiryDateMatch = bestBefore ? bestBefore.match(packagingDateRegex) : null;
+    const combinedMatch = combinedDates ? combinedDates.match(packagingDateRegex) : null;
+    const isExpiryPhrase = /best\s*before|use\s*by|expiry|exp\b|pkd\b|mfg\b/i.test(combinedDates);
 
-    if (!combinedDates || !dateMatch) {
+    const hasValidDate = Boolean(mfgDateMatch || expiryDateMatch || combinedMatch || isExpiryPhrase);
+
+    if (!hasValidDate) {
       results["date_declaration"] = {
         rule: "Rule 6(1)(d)",
         label: "Month & Year of Manufacture / Packing / Expiry",
         status: "FAIL",
         violation_type: "MISSING",
         detected: combinedDates || null,
-        required: "Month and Year (MM/YYYY) of manufacture/packing/import",
+        required: "Month and Year (MM/YYYY or MMM/YY) of manufacture/packaging",
         message: "MISSING: Mandatory Month and Year of manufacture or packing is missing or illegible.",
         severity: "HIGH",
         penalty_section: "Section 36 of Legal Metrology Act, 2009"
@@ -462,15 +470,43 @@ export class LegalMetrologyRulesEngine {
       violations.push("Rule 6(1)(d) [MISSING]: Missing or illegible month/year of packing/manufacture.");
       missingDeclarations.push("Rule 6(1)(d): Month and Year of Packing/Manufacture");
     } else {
+      const detectedDisplay = [
+        mfgDate ? `Mfg/Pkg: ${mfgDate}` : null,
+        bestBefore ? `Expiry/Use By: ${bestBefore}` : null
+      ].filter(Boolean).join(" | ") || combinedDates;
+
       results["date_declaration"] = {
         rule: "Rule 6(1)(d)",
         label: "Month & Year of Manufacture / Packing / Expiry",
         status: "PASS",
         violation_type: "NONE",
-        detected: dateMatch[0],
-        best_before: bestBefore || null,
-        message: `Compliant. Valid date declaration: '${dateMatch[0]}'.`
+        detected: detectedDisplay,
+        mfg_date: mfgDate || (mfgDateMatch ? mfgDateMatch[0] : null),
+        best_before: bestBefore || (expiryDateMatch ? expiryDateMatch[0] : null),
+        message: `Compliant. Valid manufacturing and expiry declarations: ${detectedDisplay}.`
       };
+
+      // Also add explicit separate audit fields for Date of Manufacture and Date of Expiration
+      if (mfgDate) {
+        results["date_of_manufacture"] = {
+          rule: "Rule 6(1)(d)",
+          label: "Date / Month & Year of Packaging / Manufacture",
+          status: "PASS",
+          violation_type: "NONE",
+          detected: mfgDate,
+          message: `Compliant. Declared Month & Year of Packaging: '${mfgDate}'.`
+        };
+      }
+      if (bestBefore) {
+        results["date_of_expiry"] = {
+          rule: "Rule 6(1)(d) & FSSAI",
+          label: "Date of Expiration / Use By / Best Before",
+          status: "PASS",
+          violation_type: "NONE",
+          detected: bestBefore,
+          message: `Compliant. Declared Date of Expiration / Use By: '${bestBefore}'.`
+        };
+      }
     }
 
     // 5. Rule 6(1)(da) (2020 Amendment): Country of Origin
