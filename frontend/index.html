@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NyayaLabel AI — Packaging Compliance Engine</title>
+  <meta name="description" content="Statutory Packaging Compliance Engine for Legal Metrology & FSSAI Packaged Commodity Verification" />
+  <meta property="og:title" content="NyayaLabel AI — Packaging Compliance Engine" />
+  <meta property="og:description" content="Statutory Packaging Compliance Engine for Legal Metrology & FSSAI Packaged Commodity Verification" />
   <!-- Tailwind CSS CDN for utility classes -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome 6 Icons -->
@@ -68,10 +71,10 @@
         <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500 animate-pulse"></span>
         <span class="text-[11px] font-medium text-slate-300">API Connected: <span class="text-emerald-400">Online</span></span>
       </div>
-      <!-- Dark Mode Indicator / Toggle -->
-      <button onclick="toggleDarkMode()" class="w-full bg-[#131b2e] hover:bg-[#1a263d] border border-[#1e293b] text-slate-300 hover:text-white rounded-lg py-1.5 px-3 text-xs flex items-center justify-center gap-2 transition">
-        <i class="fa-solid fa-moon text-slate-400 text-xs"></i>
-        <span>Dark Mode</span>
+      <!-- Light / Dark Mode Toggle -->
+      <button id="btn-theme-toggle-sidebar" onclick="toggleTheme()" class="w-full bg-[#131b2e] hover:bg-[#1a263d] border border-[#1e293b] text-slate-300 hover:text-white rounded-lg py-1.5 px-3 text-xs flex items-center justify-center gap-2 transition cursor-pointer">
+        <i id="theme-icon-sidebar" class="fa-solid fa-sun text-amber-400 text-xs"></i>
+        <span id="theme-label-sidebar">Light Mode</span>
       </button>
     </div>
   </aside>
@@ -89,7 +92,12 @@
 
       <!-- Header Actions -->
       <div class="flex items-center gap-3">
-        <button onclick="refreshCurrentTab()" class="bg-[#131b2e] hover:bg-[#1a263d] border border-[#1e293b] text-slate-300 hover:text-white rounded-lg px-3 py-1.5 text-xs font-medium flex items-center gap-1.5 transition">
+        <!-- Theme Toggle (Light / Dark Mode) -->
+        <button id="btn-theme-toggle-header" onclick="toggleTheme()" class="bg-[#131b2e] hover:bg-[#1a263d] border border-[#1e293b] text-slate-300 hover:text-white rounded-lg px-3 py-1.5 text-xs font-medium flex items-center gap-1.5 transition cursor-pointer">
+          <i id="theme-icon-header" class="fa-solid fa-sun text-amber-400 text-xs"></i>
+          <span id="theme-label-header">Light Mode</span>
+        </button>
+        <button onclick="refreshCurrentTab()" class="bg-[#131b2e] hover:bg-[#1a263d] border border-[#1e293b] text-slate-300 hover:text-white rounded-lg px-3 py-1.5 text-xs font-medium flex items-center gap-1.5 transition cursor-pointer">
           <i class="fa-solid fa-rotate-right text-[11px]"></i>
           <span>Refresh</span>
         </button>
@@ -623,26 +631,57 @@
       </div>
 
       <!-- Modal Body -->
-      <div class="p-5 space-y-5">
-        <!-- Overview Scorecards -->
-        <div class="grid grid-cols-3 gap-3">
-          <div class="p-3 rounded-lg bg-[#0b1120] border border-[#1e293b]">
+      <div class="p-5 space-y-4">
+        <!-- Tested Product Image & Identity Card -->
+        <div id="modal-image-preview-card" class="p-3 rounded-lg bg-[#0b1120] border border-[#1e293b] flex items-center gap-4">
+          <img id="modal-product-img" src="" alt="Tested Product" class="w-20 h-20 rounded-lg object-contain border border-slate-700 bg-slate-900 flex-shrink-0" />
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white text-sm" id="modal-product-name-caption">Product Image</span>
+              <span id="modal-packaging-badge" class="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Packaged Commodity</span>
+            </div>
+            <p id="modal-company-caption" class="text-slate-400 text-xs">Company / Packer</p>
+            <p id="modal-image-filename-caption" class="font-mono text-[10px] text-slate-500">Image recorded for statutory evidence</p>
+          </div>
+        </div>
+
+        <!-- Non-Packaged Warning Banner -->
+        <div id="modal-non-packaged-warning-banner" class="hidden p-3 rounded-lg bg-red-950/40 border border-red-500/40 text-xs text-red-300">
+          <div class="flex items-center gap-2 font-bold text-red-200 mb-1">
+            <i class="fa-solid fa-triangle-exclamation text-red-400"></i>
+            <span>Statutory Warning: Non-Packaged Item Detected</span>
+          </div>
+          <p id="modal-non-packaged-warning-text" class="text-[11px] leading-relaxed">
+            The tested image is not a packaged food commodity label (e.g. human face/portrait or non-packaging object). Under Section 18 of the Legal Metrology Act, 2009, statutory packaging declarations apply exclusively to pre-packaged commodities.
+          </p>
+        </div>
+
+        <!-- Overview Scorecards (4 Columns) -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <div class="p-2.5 rounded-lg bg-[#0b1120] border border-[#1e293b]">
             <p class="text-[10px] text-slate-400 uppercase font-semibold">Risk Score</p>
-            <p id="modal-risk-score" class="text-xl font-bold text-red-400 mt-0.5">0.93</p>
+            <p id="modal-risk-score" class="text-lg font-bold text-red-400 mt-0.5">0.93</p>
           </div>
-          <div class="p-3 rounded-lg bg-[#0b1120] border border-[#1e293b]">
+          <div class="p-2.5 rounded-lg bg-[#0b1120] border border-[#1e293b]">
             <p class="text-[10px] text-slate-400 uppercase font-semibold">Compliance</p>
-            <p id="modal-compliance-score" class="text-xl font-bold text-emerald-400 mt-0.5">25%</p>
+            <p id="modal-compliance-score" class="text-lg font-bold text-emerald-400 mt-0.5">25%</p>
           </div>
-          <div class="p-3 rounded-lg bg-[#0b1120] border border-[#1e293b]">
-            <p class="text-[10px] text-slate-400 uppercase font-semibold">Violations</p>
-            <p id="modal-violations-count" class="text-xl font-bold text-amber-400 mt-0.5">2</p>
+          <div class="p-2.5 rounded-lg bg-[#0b1120] border border-red-900/30 bg-red-950/10">
+            <p class="text-[10px] text-red-300 uppercase font-semibold">Missing</p>
+            <p id="modal-missing-count" class="text-lg font-bold text-red-400 mt-0.5">0</p>
+          </div>
+          <div class="p-2.5 rounded-lg bg-[#0b1120] border border-amber-900/30 bg-amber-950/10">
+            <p class="text-[10px] text-amber-300 uppercase font-semibold">Non-Compliant</p>
+            <p id="modal-noncompliant-count" class="text-lg font-bold text-amber-400 mt-0.5">2</p>
           </div>
         </div>
 
         <!-- Field Breakdown Checks -->
         <div>
-          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Statutory Field Audits</h4>
+          <div class="flex items-center justify-between mb-2">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Statutory Field Audits (2009-2026 Rules)</h4>
+            <span class="text-[10px] text-slate-400">Rules 6-9, FSSAI, USP</span>
+          </div>
           <div id="modal-field-checks-container" class="space-y-2 max-h-56 overflow-y-auto pr-1">
             <!-- Dynamically populated checks -->
           </div>

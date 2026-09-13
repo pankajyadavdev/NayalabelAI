@@ -12,6 +12,7 @@ let currentModalScanId = null;
 
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
   initAuthSession();
   loadDashboard();
   loadCompanies();
@@ -68,9 +69,80 @@ function refreshCurrentTab() {
   switchTab(currentActiveTab);
 }
 
+// ================= THEME STATE & TOGGLING =================
+let currentTheme = localStorage.getItem('nyaya_theme') || 'dark';
+
+function initTheme() {
+  applyTheme(currentTheme);
+}
+
+function applyTheme(theme) {
+  currentTheme = theme;
+  localStorage.setItem('nyaya_theme', theme);
+  document.documentElement.setAttribute('data-theme', theme);
+
+  const isLight = theme === 'light';
+
+  // Header button
+  const iconHeader = document.getElementById('theme-icon-header');
+  const labelHeader = document.getElementById('theme-label-header');
+  if (iconHeader) {
+    iconHeader.className = isLight ? 'fa-solid fa-moon text-indigo-500 text-xs' : 'fa-solid fa-sun text-amber-400 text-xs';
+  }
+  if (labelHeader) {
+    labelHeader.innerText = isLight ? 'Dark Mode' : 'Light Mode';
+  }
+
+  // Sidebar button
+  const iconSidebar = document.getElementById('theme-icon-sidebar');
+  const labelSidebar = document.getElementById('theme-label-sidebar');
+  if (iconSidebar) {
+    iconSidebar.className = isLight ? 'fa-solid fa-moon text-indigo-500 text-xs' : 'fa-solid fa-sun text-amber-400 text-xs';
+  }
+  if (labelSidebar) {
+    labelSidebar.innerText = isLight ? 'Dark Mode' : 'Light Mode';
+  }
+}
+
+function toggleTheme() {
+  const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  applyTheme(nextTheme);
+}
+
 function toggleDarkMode() {
-  // Theme is already optimized dark; notify user
-  alert("Dark theme is active and standardized for Directorate Enforcement.");
+  toggleTheme();
+}
+
+// Global Notification Toast
+function showNotificationToast(message, type = 'warning') {
+  let toastContainer = document.getElementById('nyaya-toast-container');
+  if (!toastContainer) {
+    toastContainer = document.createElement('div');
+    toastContainer.id = 'nyaya-toast-container';
+    toastContainer.className = 'fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none';
+    document.body.appendChild(toastContainer);
+  }
+
+  const toast = document.createElement('div');
+  const borderCol = type === 'error' ? 'border-red-500 bg-red-950/95 text-red-200' :
+                    type === 'success' ? 'border-emerald-500 bg-emerald-950/95 text-emerald-200' :
+                    'border-amber-500 bg-amber-950/95 text-amber-200';
+  const iconClass = type === 'error' ? 'fa-circle-xmark text-red-400' :
+                    type === 'success' ? 'fa-circle-check text-emerald-400' :
+                    'fa-triangle-exclamation text-amber-400';
+
+  toast.className = `pointer-events-auto px-4 py-3 rounded-xl border shadow-xl flex items-center gap-2.5 text-xs transition-all duration-300 transform translate-y-4 opacity-0 ${borderCol}`;
+  toast.innerHTML = `<i class="fa-solid ${iconClass} text-sm flex-shrink-0"></i><span>${message}</span>`;
+  toastContainer.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.classList.remove('translate-y-4', 'opacity-0');
+  });
+
+  setTimeout(() => {
+    toast.classList.add('opacity-0', 'translate-y-2');
+    setTimeout(() => toast.remove(), 350);
+  }, 4000);
 }
 
 // ================= DASHBOARD & BENCHMARK =================
@@ -134,9 +206,22 @@ function renderRecentTable(items) {
     else if (riskNum === 0) riskColor = 'text-emerald-400 font-bold font-mono';
     else if (riskNum > 0) riskColor = 'text-amber-400 font-bold font-mono';
 
+    const imgUrl = item.image_url || (item.image_filename ? `/uploads/${item.image_filename}` : '/uploads/scan_NYAYA-2026-7D4486.jpg');
+    const warningBadge = item.is_packaged_product === false
+      ? `<span class="text-[9px] bg-red-500/20 text-red-400 border border-red-500/30 px-1.5 py-0.5 rounded ml-1 font-bold">NON-PACKAGED</span>`
+      : '';
+
     tr.innerHTML = `
       <td class="font-mono font-bold text-slate-300">${item.display_id || '#' + item.id}</td>
-      <td class="font-semibold text-white">${item.product_name || item.product}</td>
+      <td>
+        <div class="flex items-center gap-2.5">
+          <img src="${imgUrl}" class="w-8 h-8 rounded object-cover border border-slate-700 bg-slate-900 flex-shrink-0" onerror="this.onerror=null;this.src='/uploads/scan_NYAYA-2026-7D4486.jpg';" />
+          <div>
+            <span class="font-semibold text-white block">${item.product_name || item.product}</span>
+            ${warningBadge}
+          </div>
+        </div>
+      </td>
       <td><span class="status-pill ${statusClass}">${item.status || item.overall_status}</span></td>
       <td class="${riskColor}">${item.risk_score || '0.00'}</td>
       <td class="text-slate-400 font-mono text-xs">${item.timestamp || item.created_at || ''}</td>
@@ -190,7 +275,7 @@ async function loadProducts() {
 }
 
 // ================= AI AUTO PRODUCT DETECTION =================
-function showAIDetectState(state, productName, company, confidence) {
+function showAIDetectState(state, productName, company, confidence, isPackaged = true, warning = null) {
   const idle = document.getElementById('ai-detect-idle');
   const scanning = document.getElementById('ai-detect-scanning');
   const result = document.getElementById('ai-detection-result-banner');
@@ -205,17 +290,64 @@ function showAIDetectState(state, productName, company, confidence) {
   } else if (state === 'scanning') {
     if (scanning) scanning.classList.remove('hidden');
   } else if (state === 'result') {
-    if (result) result.classList.remove('hidden');
-    const titleEl = document.getElementById('detected-product-title');
-    const subEl = document.getElementById('detected-product-sub');
-    const confEl = document.getElementById('detected-confidence-badge');
-    if (titleEl) titleEl.innerText = productName || 'Unknown Product';
-    if (subEl) subEl.innerText = company || '';
-    if (confEl) confEl.innerText = confidence ? `${Math.round(confidence * 100)}% Match` : 'AI Detected';
+    if (result) {
+      result.classList.remove('hidden');
+      const titleEl = document.getElementById('detected-product-title');
+      const subEl = document.getElementById('detected-product-sub');
+      const confEl = document.getElementById('detected-confidence-badge');
 
-    // Update hidden input with the detected product name for form submission
-    const hiddenInput = document.getElementById('select-target-product');
-    if (hiddenInput) hiddenInput.value = productName || 'AUTO';
+      if (isPackaged === false || warning) {
+        // Warning style for non-packaged items (human faces, non-food objects)
+        result.className = 'p-3.5 rounded-xl bg-amber-950/40 border border-amber-500/50 text-xs shadow-sm space-y-2.5';
+        if (titleEl) {
+          titleEl.innerHTML = `<span class="text-amber-300 font-bold flex items-center gap-1.5 text-xs"><i class="fa-solid fa-triangle-exclamation text-amber-400"></i> Warning: Please Upload Product Image</span>`;
+        }
+        if (subEl) {
+          subEl.innerHTML = `
+            <p class="text-amber-200 text-[11px] leading-relaxed">
+              Target detected is a <strong>${productName || 'human hand / non-packaged item'}</strong>. For statutory Legal Metrology compliance inspection, please upload a pre-packaged product image (snack pouch, biscuit box, beverage bottle, food carton).
+            </p>
+            <div class="flex items-center gap-2 pt-1">
+              <button type="button" onclick="triggerFileInput()" class="bg-amber-600 hover:bg-amber-500 text-white font-semibold px-2.5 py-1 rounded-md text-[11px] flex items-center gap-1 transition shadow-sm cursor-pointer">
+                <i class="fa-regular fa-folder-open"></i> Upload Product Image
+              </button>
+              <button type="button" onclick="openLiveCameraModal()" class="bg-[#1e293b] hover:bg-[#334155] border border-amber-500/30 text-amber-100 px-2.5 py-1 rounded-md text-[11px] flex items-center gap-1 transition cursor-pointer">
+                <i class="fa-solid fa-camera"></i> Retake with Camera
+              </button>
+            </div>
+          `;
+        }
+        if (confEl) {
+          confEl.className = 'text-[10px] font-mono text-amber-300 bg-amber-500/20 px-2 py-1 rounded-lg font-bold border border-amber-500/40 flex-shrink-0';
+          confEl.innerText = 'ADVISORY NOTICE';
+        }
+
+        // Keep scanning enabled! DO NOT stop scanning
+        const btn = document.getElementById('btn-run-inspection');
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-xs text-amber-300"></i><span>Proceed with Section 18 Audit on Current Target</span>`;
+        }
+      } else {
+        // Compliant / identified packaged product
+        result.className = 'p-3 rounded-lg bg-emerald-950/30 border border-emerald-500/30 text-xs';
+        if (titleEl) titleEl.innerText = productName || 'Packaged Commodity';
+        if (subEl) subEl.innerText = company || 'Registered FMCG Packer';
+        if (confEl) {
+          confEl.className = 'text-[10px] font-mono text-emerald-400 bg-emerald-500/20 px-2 py-1 rounded-lg font-bold border border-emerald-500/30 flex-shrink-0';
+          confEl.innerText = confidence ? `${Math.round(confidence * 100)}% Match` : 'AI Detected';
+        }
+        const btn = document.getElementById('btn-run-inspection');
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fa-solid fa-microchip text-xs"></i><span>Run AI Label Inspection</span>`;
+        }
+      }
+
+      // Update hidden input with the detected product name for form submission
+      const hiddenInput = document.getElementById('select-target-product');
+      if (hiddenInput) hiddenInput.value = productName || 'AUTO';
+    }
   }
 }
 
@@ -236,10 +368,21 @@ async function runAIProductDetection() {
     if (!res.ok) throw new Error('Detection failed');
     const d = await res.json();
 
+    const isPackaged = d.is_packaged_product === true &&
+      !d.detected_object_type?.includes('HAND') &&
+      !d.detected_object_type?.includes('FACE') &&
+      !d.detected_object_type?.includes('PERSON') &&
+      !d.detected_object_type?.includes('BODY') &&
+      !d.detected_object_type?.includes('FINGER') &&
+      !d.detected_object_type?.includes('SKIN') &&
+      !d.detected_object_type?.includes('NON_PACKAGED');
+
     showAIDetectState('result',
-      d.product_name || 'Packaged Commodity',
+      d.product_name || (isPackaged ? 'Packaged Commodity' : 'Human Hand / Non-Packaged Target'),
       d.company_name || '',
-      d.confidence || 0.92
+      d.confidence || 0.98,
+      isPackaged,
+      d.warning || (isPackaged ? null : 'Statutory Warning: Target is a human hand / non-packaged item and NOT a pre-packaged food commodity. Under Section 18 of the Legal Metrology Act, 2009, statutory packaging declarations apply exclusively to pre-packaged commodities.')
     );
   } catch (err) {
     console.warn('AI detection error:', err);
@@ -321,9 +464,22 @@ function renderHistoryTable(items) {
     else if (riskNum === 0) riskColor = 'text-emerald-400 font-bold font-mono';
     else if (riskNum > 0) riskColor = 'text-amber-400 font-bold font-mono';
 
+    const imgUrl = item.image_url || (item.image_filename ? `/uploads/${item.image_filename}` : '/uploads/scan_NYAYA-2026-7D4486.jpg');
+    const warningBadge = item.is_packaged_product === false
+      ? `<span class="text-[9px] bg-red-500/20 text-red-400 border border-red-500/30 px-1.5 py-0.5 rounded ml-1 font-bold">NON-PACKAGED</span>`
+      : '';
+
     tr.innerHTML = `
       <td class="font-mono font-bold text-slate-300">${item.display_id || '#' + item.id}</td>
-      <td class="font-semibold text-white">${item.product_name || item.product}</td>
+      <td>
+        <div class="flex items-center gap-2.5">
+          <img src="${imgUrl}" class="w-8 h-8 rounded object-cover border border-slate-700 bg-slate-900 flex-shrink-0" onerror="this.onerror=null;this.src='/uploads/scan_NYAYA-2026-7D4486.jpg';" />
+          <div>
+            <span class="font-semibold text-white block">${item.product_name || item.product}</span>
+            ${warningBadge}
+          </div>
+        </div>
+      </td>
       <td class="text-slate-400 text-xs">${item.company_name || 'Registered FMCG Packer'}</td>
       <td><span class="status-pill ${statusClass}">${item.status || item.overall_status}</span></td>
       <td class="${riskColor}">${item.risk_score || '0.00'}</td>
@@ -619,10 +775,14 @@ async function submitInspection() {
 
   // Verify label is provided
   if (!selectedFile && !selectedCameraDataUrl) {
-    // Auto-fallback to quick demo for effortless immediate inspection
-    selectQuickDemo('kurkure');
-    // Wait briefly for demo to load
-    await new Promise(r => setTimeout(r, 100));
+    showNotificationToast('Please upload a product packaging image or use the camera to begin inspection.', 'warning');
+    const dropzoneArea = document.getElementById('dropzone-area');
+    if (dropzoneArea) {
+      dropzoneArea.classList.add('ring-2', 'ring-amber-500');
+      setTimeout(() => dropzoneArea.classList.remove('ring-2', 'ring-amber-500'), 2500);
+    }
+    triggerFileInput();
+    return;
   }
 
   // Button Loading state
@@ -678,29 +838,97 @@ async function viewInspectionDetails(scanId) {
     document.getElementById('modal-display-id').innerText = scan.display_id || '#' + scan.id;
     document.getElementById('modal-product-title').innerText = scan.product_name || scan.product;
     
+    const isPackaged = scan.is_packaged_product === true &&
+      !scan.object_category?.includes('HAND') &&
+      !scan.object_category?.includes('FACE') &&
+      !scan.object_category?.includes('PERSON') &&
+      !scan.object_category?.includes('BODY') &&
+      !scan.object_category?.includes('NON_PACKAGED') &&
+      !scan.product_name?.toLowerCase().includes('hand') &&
+      !scan.product_name?.toLowerCase().includes('face') &&
+      !scan.product_name?.toLowerCase().includes('non-packaged');
+
     // Status Badge
     const badge = document.getElementById('modal-status-badge');
-    const statusText = scan.status || scan.overall_status;
+    const statusText = !isPackaged ? 'FAILED (NON-PACKAGED)' : (scan.status || scan.overall_status);
     if (badge) {
       badge.innerText = statusText;
-      badge.className = 'status-pill ' + (statusText === 'Passed' ? 'status-pill-passed' : 'status-pill-failed');
+      badge.className = 'status-pill ' + (isPackaged && statusText === 'Passed' ? 'status-pill-passed' : 'status-pill-failed bg-red-500/20 text-red-400 border border-red-500/40 font-bold');
     }
 
-    // Scores
+    // Tested Product Image & Classification
+    const imgElem = document.getElementById('modal-product-img');
+    const nameCap = document.getElementById('modal-product-name-caption');
+    const compCap = document.getElementById('modal-company-caption');
+    const fileCap = document.getElementById('modal-image-filename-caption');
+    const pkgBadge = document.getElementById('modal-packaging-badge');
+
+    if (imgElem) {
+      const imgSrc = scan.image_url || (scan.image_filename ? `/uploads/${scan.image_filename}` : '/uploads/scan_NYAYA-2026-7D4486.jpg');
+      imgElem.src = imgSrc;
+      imgElem.onerror = function() {
+        this.src = '/uploads/scan_NYAYA-2026-7D4486.jpg';
+      };
+    }
+    if (nameCap) nameCap.innerText = scan.product_name || scan.product || (isPackaged ? 'Product Label' : 'Human Hand / Non-Packaged Target');
+    if (compCap) compCap.innerText = scan.company_name || scan.brand_name || (isPackaged ? 'Registered Packer' : 'Non-Packaged Target (No Registered Packer)');
+    if (fileCap) fileCap.innerText = scan.image_filename ? `Evidence File: ${scan.image_filename}` : 'Visual Evidence Stored';
+    if (pkgBadge) {
+      if (isPackaged) {
+        pkgBadge.className = 'text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+        pkgBadge.innerText = 'Pre-Packaged Commodity';
+      } else {
+        pkgBadge.className = 'text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-red-500/20 text-red-400 border border-red-500/30';
+        pkgBadge.innerText = 'NON-PACKAGED ITEM';
+      }
+    }
+
+    // Warning Banner for non-packaged items
+    const warnBanner = document.getElementById('modal-non-packaged-warning-banner');
+    const warnText = document.getElementById('modal-non-packaged-warning-text');
+    if (warnBanner) {
+      if (!isPackaged || scan.warning_message) {
+        warnBanner.classList.remove('hidden');
+        if (warnText) {
+          warnText.innerText = scan.warning_message || 'Statutory Notice: The tested target is a human hand / non-packaged item and NOT a pre-packaged food commodity or commercial packaging label. Under Section 18 of the Legal Metrology Act, 2009, statutory packaging declarations apply exclusively to pre-packaged commodities. All 12 mandatory statutory declarations have failed.';
+        }
+      } else {
+        warnBanner.classList.add('hidden');
+      }
+    }
+
+    // Scores & Counts
+    const evalData = scan.evaluation_result || {};
+    const missingCount = scan.missing_count ?? evalData.missing_count ?? (evalData.missing_declarations ? evalData.missing_declarations.length : 0);
+    const nonCompliantCount = scan.non_compliant_count ?? evalData.non_compliant_count ?? (evalData.non_compliant_declarations ? evalData.non_compliant_declarations.length : 0);
+
     document.getElementById('modal-risk-score').innerText = scan.risk_score || '0.00';
     document.getElementById('modal-compliance-score').innerText = (scan.compliance_score || 0) + '%';
-    document.getElementById('modal-violations-count').innerText = scan.violations_count || 0;
+    const missingEl = document.getElementById('modal-missing-count');
+    const nonCompEl = document.getElementById('modal-noncompliant-count');
+    if (missingEl) missingEl.innerText = missingCount;
+    if (nonCompEl) nonCompEl.innerText = nonCompliantCount;
 
     // Checks List
     const checksContainer = document.getElementById('modal-field-checks-container');
     if (checksContainer) {
       checksContainer.innerHTML = '';
-      const evalData = scan.evaluation_result || {};
       const fields = evalData.field_checks || {};
 
       Object.keys(fields).forEach(key => {
         const item = fields[key];
         const isPass = item.status === 'PASS';
+        const vType = item.violation_type || (isPass ? 'PASS' : 'NON_COMPLIANT');
+
+        let pillHtml = `<span class="status-pill status-pill-passed flex-shrink-0 ml-2">PASS</span>`;
+        if (!isPass) {
+          if (vType === 'MISSING') {
+            pillHtml = `<span class="bg-red-500/20 text-red-400 border border-red-500/40 text-[10px] font-bold px-2 py-0.5 rounded flex-shrink-0 ml-2">MISSING</span>`;
+          } else {
+            pillHtml = `<span class="bg-amber-500/20 text-amber-400 border border-amber-500/40 text-[10px] font-bold px-2 py-0.5 rounded flex-shrink-0 ml-2">NON-COMPLIANT</span>`;
+          }
+        }
+
         const row = document.createElement('div');
         row.className = 'flex items-start justify-between p-2.5 rounded-lg bg-[#0f172a] border border-[#1e293b] text-xs';
         row.innerHTML = `
@@ -709,16 +937,14 @@ async function viewInspectionDetails(scanId) {
             <span class="font-semibold text-white ml-1.5">${item.label || key}</span>
             <p class="text-slate-400 text-[11px] mt-0.5">${item.message || ''}</p>
           </div>
-          <span class="status-pill ${isPass ? 'status-pill-passed' : 'status-pill-failed'} flex-shrink-0 ml-2">
-            ${isPass ? 'PASS' : 'FAIL'}
-          </span>
+          ${pillHtml}
         `;
         checksContainer.appendChild(row);
       });
     }
 
     // Notes
-    document.getElementById('modal-officer-notes').innerText = scan.officer_notes || 'Inspected under Legal Metrology Act 2009 & Packaged Commodities Rules 2011.';
+    document.getElementById('modal-officer-notes').innerText = scan.officer_notes || 'Inspected under Legal Metrology Act 2009 & Packaged Commodities Rules 2011 (Amended 2026).';
     document.getElementById('modal-timestamp').innerText = scan.timestamp || scan.created_at || '';
 
     // Open Modal

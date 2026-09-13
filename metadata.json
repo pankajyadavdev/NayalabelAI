@@ -1,0 +1,10 @@
+{
+  "name": "NyayaLabel AI",
+  "description": "Statutory Packaging Compliance Engine for Legal Metrology & FSSAI Packaged Commodity Verification",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
