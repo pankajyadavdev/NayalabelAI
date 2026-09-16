@@ -12,7 +12,7 @@ import { generatePdfReport } from "./src/pdfReport";
 import { dbStore, STANDARD_PRODUCTS, USERS } from "./src/database";
 
 const app = express();
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 // Ensure uploads folder exists
 const uploadsDir = path.join(process.cwd(), "uploads");
@@ -276,7 +276,7 @@ app.get("/api/scan/:scan_id/pdf", async (req, res) => {
     }
 
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", `inline; filename="NyayaLabel_Report_${scan.scan_id}.pdf"`);
+    res.setHeader("Content-Disposition", `inline; filename="NyayLabel_Report_${scan.scan_id}.pdf"`);
 
     await generatePdfReport(scan, res);
   } catch (err: any) {
@@ -293,7 +293,7 @@ app.get("/api/scan/:scan_id/json", (req, res) => {
   if (!scan) {
     return res.status(404).json({ detail: "Inspection record not found" });
   }
-  res.setHeader("Content-Disposition", `attachment; filename="NyayaLabel_Audit_${scan.scan_id}.json"`);
+  res.setHeader("Content-Disposition", `attachment; filename="NyayLabel_Audit_${scan.scan_id}.json"`);
   res.json(scan);
 });
 
@@ -308,5 +308,5 @@ app.get("*", (req, res) => {
 
 // Start Server
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`NyayaLabel AI compliance server running on http://0.0.0.0:${PORT}`);
+  console.log(`NyayLabel AI compliance server running on http://0.0.0.0:${PORT}`);
 });

@@ -1,10 +1,10 @@
 @echo off
-title NyayaLabel AI - Starting Server...
+title NyayLabel AI - Starting Server...
 color 0B
 
 echo.
 echo  ========================================
-echo    NyayaLabel AI  -  Local Startup
+echo    NyayLabel AI  -  Local Startup
 echo  ========================================
 echo.
 

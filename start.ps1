@@ -1,4 +1,4 @@
-# NyayaLabel AI — One-Click Local Startup Script (PowerShell)
+# NyayLabel AI — One-Click Local Startup Script (PowerShell)
 # Run this from the project root: E:\NAYALABELAI\
 # Usage: Right-click -> "Run with PowerShell"  OR  in terminal: .\start.ps1
 
@@ -8,7 +8,7 @@ $VenvPip     = "$ProjectRoot\backend\venv\Scripts\pip.exe"
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "   NyayaLabel AI  -  Startup Script    " -ForegroundColor Cyan
+Write-Host "   NyayLabel AI  -  Startup Script     " -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -41,7 +41,7 @@ Write-Host "    All dependencies OK." -ForegroundColor Green
 
 # Step 3: Start the server
 Write-Host ""
-Write-Host "[3/3] Starting NyayaLabel AI server on http://127.0.0.1:8000 ..." -ForegroundColor Yellow
+Write-Host "[3/3] Starting NyayLabel AI server on http://127.0.0.1:8000 ..." -ForegroundColor Yellow
 Write-Host ""
 Write-Host "  --> Open your browser and go to: http://127.0.0.1:8000" -ForegroundColor Cyan
 Write-Host "  --> Login: officer / officer123   (or manager / manager123)" -ForegroundColor Cyan

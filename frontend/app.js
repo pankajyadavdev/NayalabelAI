@@ -1,5 +1,5 @@
 /**
- * NyayaLabel AI — Packaging Compliance Engine Frontend Logic
+ * NyayLabel AI — Packaging Compliance Engine Frontend Logic
  * Supports: Dark Theme, Live Webcam Camera Scanning, Benchmark History, PDF Exports
  */
 
@@ -19,9 +19,35 @@ document.addEventListener('DOMContentLoaded', () => {
   setupDropzone();
 });
 
-// ================= TAB SWITCHING =================
+// ================= TAB SWITCHING & MOBILE DRAWER =================
+function toggleMobileSidebar() {
+  const sidebar = document.getElementById('main-sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  if (sidebar && backdrop) {
+    const isOpen = sidebar.classList.contains('open');
+    if (isOpen) {
+      closeMobileSidebar();
+    } else {
+      sidebar.classList.add('open');
+      backdrop.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+}
+
+function closeMobileSidebar() {
+  const sidebar = document.getElementById('main-sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  if (sidebar) sidebar.classList.remove('open');
+  if (backdrop) backdrop.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
 function switchTab(tabId) {
   currentActiveTab = tabId;
+
+  // Automatically close mobile drawer if open
+  closeMobileSidebar();
 
   // Hide all tab sections
   const tabs = ['dashboard', 'scan', 'history', 'products', 'companies', 'rules'];
@@ -30,6 +56,8 @@ function switchTab(tabId) {
     if (el) el.classList.add('hidden');
     const navEl = document.getElementById('nav-' + t);
     if (navEl) navEl.classList.remove('active');
+    const mobEl = document.getElementById('mob-nav-' + t);
+    if (mobEl) mobEl.classList.remove('active');
   });
 
   // Show active tab
@@ -38,6 +66,9 @@ function switchTab(tabId) {
 
   const activeNav = document.getElementById('nav-' + tabId);
   if (activeNav) activeNav.classList.add('active');
+
+  const activeMob = document.getElementById('mob-nav-' + tabId);
+  if (activeMob) activeMob.classList.add('active');
 
   // Update Breadcrumb Title
   const titleMap = {
@@ -63,6 +94,9 @@ function switchTab(tabId) {
       showAIDetectState('idle');
     }
   }
+
+  // Scroll to top on mobile for clean screen transition
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function refreshCurrentTab() {

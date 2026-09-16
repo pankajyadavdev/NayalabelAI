@@ -9,7 +9,7 @@ export function generatePdfReport(inspection: Record<string, any>, outputStream:
       size: "A4",
       margins: { top: 36, bottom: 36, left: 36, right: 36 },
       info: {
-        Title: `NyayaLabel Inspection - ${inspection.scan_id || "Report"}`,
+        Title: `NyayLabel Inspection - ${inspection.scan_id || "Report"}`,
         Author: "Directorate of Legal Metrology"
       }
     });
@@ -164,7 +164,7 @@ export function generatePdfReport(inspection: Record<string, any>, outputStream:
     // Footer of Page 1
     doc.strokeColor("#cbd5e1").lineWidth(0.5).moveTo(36, 765).lineTo(559, 765).stroke();
     doc.fillColor("#64748b").font("Helvetica").fontSize(7);
-    doc.text("NyayaLabel AI Enforcement Platform • Continued on Page 2 for Visual Evidence and Statutory Notice", 36, 772);
+    doc.text("NyayLabel AI Enforcement Platform • Continued on Page 2 for Visual Evidence and Statutory Notice", 36, 772);
     doc.text("Page 1 of 2", 500, 772, { align: "right" });
 
     // ================= PAGE 2 =================

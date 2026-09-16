@@ -302,7 +302,7 @@ seed_database()
 
 app = FastAPI(
     title=APP_NAME,
-    description="NyayaLabel AI — Automated Packaged Commodities Compliance Engine",
+    description="NyayLabel AI — Automated Packaged Commodities Compliance Engine",
     version=APP_VERSION
 )
 

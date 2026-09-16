@@ -166,7 +166,7 @@ Respond ONLY with valid JSON in this exact structure:
   "raw_vision_summary": "Summary of visual inspection."
 }`;
 
-        const candidateModels = ["gemini-3.6-flash", "gemini-3.1-flash-lite", "gemini-flash-latest"];
+        const candidateModels = ["gemini-flash-latest", "gemini-3.1-flash-lite", "gemini-3.8-flash"];
         let response: any = null;
         let lastError: any = null;
 
@@ -192,10 +192,10 @@ Respond ONLY with valid JSON in this exact structure:
               }
             });
 
-            // Enforce a strict 6.5s timeout per candidate model
+            // Enforce a 12s timeout per candidate model for responsive vision extraction
             let timer: any;
             const timeoutPromise = new Promise<never>((_, reject) => {
-              timer = setTimeout(() => reject(new Error(`Model ${modelName} call exceeded 6500ms timeout`)), 6500);
+              timer = setTimeout(() => reject(new Error(`Model ${modelName} call exceeded 12000ms timeout`)), 12000);
             });
 
             response = await Promise.race([generatePromise, timeoutPromise]).finally(() => clearTimeout(timer));
@@ -205,7 +205,7 @@ Respond ONLY with valid JSON in this exact structure:
             }
           } catch (err: any) {
             lastError = err;
-            console.warn(`Vision model ${modelName} failed, falling back to next candidate:`, err.message?.slice(0, 100));
+            // Graceful fallback to next model or offline engine
           }
         }
 

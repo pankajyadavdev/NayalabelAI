@@ -176,26 +176,26 @@ CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000", "--wo
 
 Build and run with Docker:
 ```bash
-docker build -t nyayalabel-ai .
-docker run -d -p 8000:8000 --name nyayalabel nyayalabel-ai
+docker build -t nyaylabel-ai .
+docker run -d -p 8000:8000 --name nyaylabel nyaylabel-ai
 ```
 
 ---
 
 ### Option 2: Linux VM (Systemd Service + Nginx Reverse Proxy)
 
-#### 1. Configure Systemd Service (`/etc/systemd/system/nyayalabel.service`):
+#### 1. Configure Systemd Service (`/etc/systemd/system/nyaylabel.service`):
 
 ```ini
 [Unit]
-Description=NyayaLabel AI Statutory Compliance Engine
+Description=NyayLabel AI Statutory Compliance Engine
 After=network.target
 
 [Service]
 User=www-data
 Group=www-data
-WorkingDirectory=/var/www/nyayalabel
-ExecStart=/var/www/nyayalabel/backend/venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8000 --workers 4
+WorkingDirectory=/var/www/nyaylabel
+ExecStart=/var/www/nyaylabel/backend/venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8000 --workers 4
 Restart=always
 RestartSec=5
 
@@ -206,8 +206,8 @@ WantedBy=multi-user.target
 Enable and start the service:
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable nyayalabel
-sudo systemctl start nyayalabel
+sudo systemctl enable nyaylabel
+sudo systemctl start nyaylabel
 ```
 
 #### 2. Configure Nginx with SSL (Required for Live Webcam in Production):

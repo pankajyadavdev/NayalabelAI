@@ -1,5 +1,5 @@
 """
-Unit and integration test verification script for NyayaLabel AI backend & frontend.
+Unit and integration test verification script for NyayLabel AI backend & frontend.
 """
 from starlette.testclient import TestClient
 from backend.main import app
@@ -42,7 +42,7 @@ def run_tests():
     print("5. Testing GET / (Frontend mount)...")
     r = client.get("/")
     assert r.status_code == 200
-    assert "NyayaLabel AI" in r.text
+    assert "NyayLabel AI" in r.text
     assert "Live Packaging Label Scanner" in r.text
     assert "Compliance Protocol" in r.text
     print("   [OK] Frontend index.html served properly with all UI components")

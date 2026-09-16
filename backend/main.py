@@ -1,5 +1,5 @@
 """
-FastAPI Server for NyayaLabel AI — Legal Metrology & FSSAI Packaged Commodities Compliance Checking Engine.
+FastAPI Server for NyayLabel AI — Legal Metrology & FSSAI Packaged Commodities Compliance Checking Engine.
 """
 import base64
 import json
@@ -39,7 +39,7 @@ rules_engine = LegalMetrologyRulesEngine(companies_registry=fmcg_companies)
 ocr_service = LabelOCRService()
 
 app = FastAPI(
-    title="NyayaLabel AI — Statutory Compliance Engine",
+    title="NyayLabel AI — Statutory Compliance Engine",
     description="Automated Packaged Commodities Legal Metrology & FSSAI Compliance Verification Directorate",
     version="2.5.0"
 )
@@ -511,13 +511,13 @@ def download_pdf_certificate(scan_id: str, db: Session = Depends(get_db)):
     if not scan:
         raise HTTPException(status_code=404, detail="Inspection scan record not found.")
 
-    pdf_path = os.path.join(REPORTS_DIR, f"NyayaLabel_Report_{scan.scan_id}.pdf")
+    pdf_path = os.path.join(REPORTS_DIR, f"NyayLabel_Report_{scan.scan_id}.pdf")
     generate_pdf_report(scan.to_dict(), pdf_path)
 
     return FileResponse(
         pdf_path,
         media_type="application/pdf",
-        filename=f"NyayaLabel_Statutory_Report_{scan.display_id or scan.scan_id}.pdf"
+        filename=f"NyayLabel_Statutory_Report_{scan.display_id or scan.scan_id}.pdf"
     )
 
 @app.get("/api/scan/{scan_id}/json")
@@ -531,7 +531,7 @@ def download_json_certificate(scan_id: str, db: Session = Depends(get_db)):
 
     return JSONResponse(
         content=scan.to_dict(),
-        headers={"Content-Disposition": f"attachment; filename=NyayaLabel_{scan.scan_id}.json"}
+        headers={"Content-Disposition": f"attachment; filename=NyayLabel_{scan.scan_id}.json"}
     )
 
 # Static Frontend mounting
