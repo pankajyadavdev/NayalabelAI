@@ -1,11 +1,11 @@
-# NyayaLabel AI — Statutory Packaging Compliance Engine
+# NyayLabel AI — Statutory Packaging Compliance Engine
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-green.svg)](https://fastapi.tiangolo.com/)
 [![Legal Metrology](https://img.shields.io/badge/Legal%20Metrology-Act%202009%20%26%202026%20Rules-orange.svg)](https://consumeraffairs.nic.in/acts-and-rules/legal-metrology)
 [![FSSAI](https://img.shields.io/badge/FSSAI-Statutory%20Format-red.svg)](https://www.fssai.gov.in/)
 
-**NyayaLabel AI** is an automated compliance audit and enforcement engine designed for Indian packaged commodities under the **Legal Metrology Act, 2009**, the **Legal Metrology (Packaged Commodities) Rules, 2011 (Amended through 2026)**, and **FSSAI statutory packaging regulations**.
+**NyayLabel AI** is an automated compliance audit and enforcement engine designed for Indian packaged commodities under the **Legal Metrology Act, 2009**, the **Legal Metrology (Packaged Commodities) Rules, 2011 (Amended through 2026)**, and **FSSAI statutory packaging regulations**.
 
 The system enables regulatory enforcement officers and FMCG brand managers to inspect product packaging labels via **file upload** or a **live browser webcam/camera scanner**, instantly auditing mandatory statutory declarations, computing compliance and risk scores, and generating official PDF inspection certificates.
 
